@@ -4,6 +4,7 @@ import com.hong_phat.crypto_trading.domain.entity.WalletEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -11,6 +12,15 @@ import java.util.Optional;
  */
 @Repository
 public interface WalletRepository extends JpaRepository<WalletEntity, Long> {
+
+    /**
+     * Find all by user id list.
+     *
+     * @param userId the user id
+     * @return the list
+     */
+    List<WalletEntity> findAllByUserId(Long userId);
+
     /**
      * Find by user id and currency optional.
      *
