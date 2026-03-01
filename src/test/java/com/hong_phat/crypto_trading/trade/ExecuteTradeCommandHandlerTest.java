@@ -45,25 +45,36 @@ public class ExecuteTradeCommandHandlerTest {
     private static final BigDecimal QUANTITY = new BigDecimal("0.5");
     private static final BigDecimal ASK_PRICE = new BigDecimal("2500.00");
     private static final BigDecimal BID_PRICE = new BigDecimal("2490.00");
+
     @Mock
     private AggregatedPriceRepository aggregatedPriceRepository;
+
     @Mock
     private WalletRepository walletRepository;
+
     @Mock
     private TradeTransactionRepository tradeTransactionRepository;
+
     @Mock
     private UserRepository userRepository;
+
     @Mock
     private TradeTransactionService tradeTransactionService;
+
     @InjectMocks
-    private ExecuteTradeCommandHandler handler;
+    private ExecuteTradeCommandHandler executeTradeCommandHandler;
+
     @Captor
     private ArgumentCaptor<WalletEntity> walletCaptor;
+
     @Captor
     private ArgumentCaptor<TradeTransactionEntity> transactionCaptor;
+
     private ExecuteTradeCommand buyCommand;
+
     private ExecuteTradeCommand sellCommand;
-    private AggregatedPriceEntity priceEntity;
+
+    private AggregatedPriceEntity aggregatedPriceEntity;
 
     /**
      * Sets up.
@@ -84,7 +95,7 @@ public class ExecuteTradeCommandHandlerTest {
                 .quantity(QUANTITY)
                 .build();
 
-        priceEntity = AggregatedPriceEntity.builder()
+        aggregatedPriceEntity = AggregatedPriceEntity.builder()
                 .id(1L)
                 .tradingPair(TradingPair.ETHUSDT)
                 .askPrice(ASK_PRICE)
@@ -117,7 +128,7 @@ public class ExecuteTradeCommandHandlerTest {
         void handle_userNotFound_throwsException() {
             when(userRepository.existsById(USER_ID)).thenReturn(false);
 
-            assertThatThrownBy(() -> handler.handle(buyCommand))
+            assertThatThrownBy(() -> executeTradeCommandHandler.handle(buyCommand))
                     .isInstanceOf(CryptoTradingException.class)
                     .hasMessageContaining("User not found");
 
@@ -142,7 +153,7 @@ public class ExecuteTradeCommandHandlerTest {
             when(aggregatedPriceRepository.findTopByTradingPairOrderByCreatedDateDesc(TradingPair.ETHUSDT))
                     .thenReturn(Optional.empty());
 
-            assertThatThrownBy(() -> handler.handle(buyCommand))
+            assertThatThrownBy(() -> executeTradeCommandHandler.handle(buyCommand))
                     .isInstanceOf(CryptoTradingException.class)
                     .hasMessageContaining("Price not available");
 
@@ -172,7 +183,7 @@ public class ExecuteTradeCommandHandlerTest {
 
             when(userRepository.existsById(USER_ID)).thenReturn(true);
             when(aggregatedPriceRepository.findTopByTradingPairOrderByCreatedDateDesc(TradingPair.ETHUSDT))
-                    .thenReturn(Optional.of(priceEntity));
+                    .thenReturn(Optional.of(aggregatedPriceEntity));
             when(walletRepository.findByUserIdAndCurrency(USER_ID, "USDT"))
                     .thenReturn(Optional.of(usdtWallet));
             when(walletRepository.findByUserIdAndCurrency(USER_ID, "ETH"))
@@ -194,7 +205,7 @@ public class ExecuteTradeCommandHandlerTest {
                                 .build();
                     });
 
-            TradeTransactionResponse response = handler.handle(buyCommand);
+            TradeTransactionResponse response = executeTradeCommandHandler.handle(buyCommand);
 
             assertThat(response).isNotNull();
             assertThat(response.getTradeType()).isEqualTo(TradeType.BUY);
@@ -228,11 +239,11 @@ public class ExecuteTradeCommandHandlerTest {
 
             when(userRepository.existsById(USER_ID)).thenReturn(true);
             when(aggregatedPriceRepository.findTopByTradingPairOrderByCreatedDateDesc(TradingPair.ETHUSDT))
-                    .thenReturn(Optional.of(priceEntity));
+                    .thenReturn(Optional.of(aggregatedPriceEntity));
             when(walletRepository.findByUserIdAndCurrency(USER_ID, "USDT"))
                     .thenReturn(Optional.of(usdtWallet));
 
-            assertThatThrownBy(() -> handler.handle(buyCommand))
+            assertThatThrownBy(() -> executeTradeCommandHandler.handle(buyCommand))
                     .isInstanceOf(CryptoTradingException.class)
                     .hasMessageContaining("Insufficient USDT balance");
 
@@ -248,13 +259,13 @@ public class ExecuteTradeCommandHandlerTest {
         void handle_buyTrade_createsUsdtWalletIfNotExists() {
             when(userRepository.existsById(USER_ID)).thenReturn(true);
             when(aggregatedPriceRepository.findTopByTradingPairOrderByCreatedDateDesc(TradingPair.ETHUSDT))
-                    .thenReturn(Optional.of(priceEntity));
+                    .thenReturn(Optional.of(aggregatedPriceEntity));
             when(walletRepository.findByUserIdAndCurrency(USER_ID, "USDT"))
                     .thenReturn(Optional.empty());
             when(walletRepository.save(any(WalletEntity.class)))
                     .thenAnswer(i -> i.getArgument(0));
 
-            assertThatThrownBy(() -> handler.handle(buyCommand))
+            assertThatThrownBy(() -> executeTradeCommandHandler.handle(buyCommand))
                     .isInstanceOf(CryptoTradingException.class)
                     .hasMessageContaining("Insufficient USDT balance");
 
@@ -286,7 +297,7 @@ public class ExecuteTradeCommandHandlerTest {
 
             when(userRepository.existsById(USER_ID)).thenReturn(true);
             when(aggregatedPriceRepository.findTopByTradingPairOrderByCreatedDateDesc(TradingPair.ETHUSDT))
-                    .thenReturn(Optional.of(priceEntity));
+                    .thenReturn(Optional.of(aggregatedPriceEntity));
             when(walletRepository.findByUserIdAndCurrency(USER_ID, "ETH"))
                     .thenReturn(Optional.of(ethWallet));
             when(walletRepository.findByUserIdAndCurrency(USER_ID, "USDT"))
@@ -308,7 +319,7 @@ public class ExecuteTradeCommandHandlerTest {
                                 .build();
                     });
 
-            TradeTransactionResponse response = handler.handle(sellCommand);
+            TradeTransactionResponse response = executeTradeCommandHandler.handle(sellCommand);
 
             assertThat(response).isNotNull();
             assertThat(response.getTradeType()).isEqualTo(TradeType.SELL);
@@ -342,11 +353,11 @@ public class ExecuteTradeCommandHandlerTest {
 
             when(userRepository.existsById(USER_ID)).thenReturn(true);
             when(aggregatedPriceRepository.findTopByTradingPairOrderByCreatedDateDesc(TradingPair.ETHUSDT))
-                    .thenReturn(Optional.of(priceEntity));
+                    .thenReturn(Optional.of(aggregatedPriceEntity));
             when(walletRepository.findByUserIdAndCurrency(USER_ID, "ETH"))
                     .thenReturn(Optional.of(ethWallet));
 
-            assertThatThrownBy(() -> handler.handle(sellCommand))
+            assertThatThrownBy(() -> executeTradeCommandHandler.handle(sellCommand))
                     .isInstanceOf(CryptoTradingException.class)
                     .hasMessageContaining("Insufficient crypto balance");
 
@@ -409,7 +420,7 @@ public class ExecuteTradeCommandHandlerTest {
                                 .build();
                     });
 
-            TradeTransactionResponse response = handler.handle(btcBuyCommand);
+            TradeTransactionResponse response = executeTradeCommandHandler.handle(btcBuyCommand);
 
             assertThat(response.getTradingPair()).isEqualTo(TradingPair.BTCUSDT);
             verify(walletRepository).findByUserIdAndCurrency(USER_ID, "BTC");
@@ -435,7 +446,7 @@ public class ExecuteTradeCommandHandlerTest {
 
             when(userRepository.existsById(USER_ID)).thenReturn(true);
             when(aggregatedPriceRepository.findTopByTradingPairOrderByCreatedDateDesc(TradingPair.ETHUSDT))
-                    .thenReturn(Optional.of(priceEntity));
+                    .thenReturn(Optional.of(aggregatedPriceEntity));
             when(walletRepository.findByUserIdAndCurrency(USER_ID, "USDT"))
                     .thenReturn(Optional.of(usdtWallet));
             when(walletRepository.findByUserIdAndCurrency(USER_ID, "ETH"))
@@ -457,7 +468,7 @@ public class ExecuteTradeCommandHandlerTest {
                                 .build();
                     });
 
-            handler.handle(buyCommand);
+            executeTradeCommandHandler.handle(buyCommand);
 
             verify(tradeTransactionRepository).save(transactionCaptor.capture());
             TradeTransactionEntity savedTransaction = transactionCaptor.getValue();
@@ -481,7 +492,7 @@ public class ExecuteTradeCommandHandlerTest {
             when(aggregatedPriceRepository.findTopByTradingPairOrderByCreatedDateDesc(TradingPair.ETHUSDT))
                     .thenReturn(Optional.empty());
 
-            assertThatThrownBy(() -> handler.handle(buyCommand))
+            assertThatThrownBy(() -> executeTradeCommandHandler.handle(buyCommand))
                     .isInstanceOf(CryptoTradingException.class);
 
             verify(tradeTransactionService).saveFailedTransaction(
