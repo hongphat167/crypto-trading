@@ -1,4 +1,4 @@
-package com.hong_phat.crypto_trading.dto;
+package com.hong_phat.crypto_trading.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;

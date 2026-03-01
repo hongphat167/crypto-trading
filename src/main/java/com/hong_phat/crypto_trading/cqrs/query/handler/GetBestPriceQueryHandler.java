@@ -2,7 +2,7 @@ package com.hong_phat.crypto_trading.cqrs.query.handler;
 
 import com.hong_phat.crypto_trading.domain.entity.AggregatedPriceEntity;
 import com.hong_phat.crypto_trading.domain.enums.TradingPair;
-import com.hong_phat.crypto_trading.dto.AggregatedPriceResponse;
+import com.hong_phat.crypto_trading.dto.response.AggregatedPriceResponse;
 import com.hong_phat.crypto_trading.repository.AggregatedPriceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

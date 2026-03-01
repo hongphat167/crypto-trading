@@ -1,7 +1,7 @@
 package com.hong_phat.crypto_trading.controller;
 
 import com.hong_phat.crypto_trading.cqrs.query.handler.GetBestPriceQueryHandler;
-import com.hong_phat.crypto_trading.dto.AggregatedPriceResponse;
+import com.hong_phat.crypto_trading.dto.response.AggregatedPriceResponse;
 import com.hong_phat.crypto_trading.dto.response.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

@@ -51,14 +51,14 @@ public class PriceAggregationScheduleTest {
     @Captor
     private ArgumentCaptor<List<AggregatedPriceEntity>> entitiesCaptor;
 
-    private PriceAggregationSchedule schedule;
+    private PriceAggregationSchedule priceAggregationSchedule;
 
     /**
      * Sets up.
      */
     @BeforeEach
     void setUp() {
-        schedule = new PriceAggregationSchedule(aggregatedPriceRepository, webClient);
+        priceAggregationSchedule = new PriceAggregationSchedule(aggregatedPriceRepository, webClient);
     }
 
     private void mockWebClientCall() {
@@ -102,7 +102,7 @@ public class PriceAggregationScheduleTest {
         when(aggregatedPriceRepository.saveAll(anyList())).thenAnswer(i -> i.getArgument(0));
 
 
-        schedule.aggregatePrices();
+        priceAggregationSchedule.aggregatePrices();
 
         verify(aggregatedPriceRepository).saveAll(entitiesCaptor.capture());
         List<AggregatedPriceEntity> saved = entitiesCaptor.getValue();
@@ -147,7 +147,7 @@ public class PriceAggregationScheduleTest {
 
         when(aggregatedPriceRepository.saveAll(anyList())).thenAnswer(i -> i.getArgument(0));
 
-        schedule.aggregatePrices();
+        priceAggregationSchedule.aggregatePrices();
 
         verify(aggregatedPriceRepository).saveAll(entitiesCaptor.capture());
         List<AggregatedPriceEntity> saved = entitiesCaptor.getValue();
@@ -185,13 +185,13 @@ public class PriceAggregationScheduleTest {
         when(aggregatedPriceRepository.saveAll(anyList())).thenAnswer(i -> i.getArgument(0));
 
 
-        schedule.aggregatePrices();
+        priceAggregationSchedule.aggregatePrices();
 
         verify(aggregatedPriceRepository).saveAll(entitiesCaptor.capture());
         List<AggregatedPriceEntity> saved = entitiesCaptor.getValue();
         assertThat(saved).hasSize(1);
-        assertThat(saved.get(0).getTradingPair()).isEqualTo(TradingPair.ETHUSDT);
-        assertThat(saved.get(0).getBidPrice()).isEqualByComparingTo(new BigDecimal("2502.00"));
+        assertThat(saved.getFirst().getTradingPair()).isEqualTo(TradingPair.ETHUSDT);
+        assertThat(saved.getFirst().getBidPrice()).isEqualByComparingTo(new BigDecimal("2502.00"));
     }
 
     /**
@@ -208,7 +208,7 @@ public class PriceAggregationScheduleTest {
         when(responseSpec.bodyToMono(HuobiResponse.class))
                 .thenReturn(Mono.error(new RuntimeException("Huobi error")));
 
-        schedule.aggregatePrices();
+        priceAggregationSchedule.aggregatePrices();
 
         verify(aggregatedPriceRepository, never()).saveAll(anyList());
     }
@@ -231,7 +231,7 @@ public class PriceAggregationScheduleTest {
                 .thenReturn(Mono.just(emptyHuobi));
 
 
-        schedule.aggregatePrices();
+        priceAggregationSchedule.aggregatePrices();
 
         verify(aggregatedPriceRepository, never()).saveAll(anyList());
     }
@@ -261,12 +261,12 @@ public class PriceAggregationScheduleTest {
         when(aggregatedPriceRepository.saveAll(anyList())).thenAnswer(i -> i.getArgument(0));
 
 
-        schedule.aggregatePrices();
+        priceAggregationSchedule.aggregatePrices();
 
         verify(aggregatedPriceRepository).saveAll(entitiesCaptor.capture());
         List<AggregatedPriceEntity> saved = entitiesCaptor.getValue();
         assertThat(saved).hasSize(1);
-        assertThat(saved.get(0).getTradingPair()).isEqualTo(TradingPair.ETHUSDT);
+        assertThat(saved.getFirst().getTradingPair()).isEqualTo(TradingPair.ETHUSDT);
     }
 
     /**
@@ -297,7 +297,7 @@ public class PriceAggregationScheduleTest {
         when(aggregatedPriceRepository.saveAll(anyList())).thenAnswer(i -> i.getArgument(0));
 
 
-        schedule.aggregatePrices();
+        priceAggregationSchedule.aggregatePrices();
 
         verify(aggregatedPriceRepository).saveAll(entitiesCaptor.capture());
         AggregatedPriceEntity ethEntity = entitiesCaptor.getValue().stream()
@@ -334,7 +334,7 @@ public class PriceAggregationScheduleTest {
         when(aggregatedPriceRepository.saveAll(anyList())).thenAnswer(i -> i.getArgument(0));
 
 
-        schedule.aggregatePrices();
+        priceAggregationSchedule.aggregatePrices();
 
         verify(aggregatedPriceRepository).saveAll(entitiesCaptor.capture());
         AggregatedPriceEntity ethEntity = entitiesCaptor.getValue().stream()
@@ -368,12 +368,12 @@ public class PriceAggregationScheduleTest {
         when(aggregatedPriceRepository.saveAll(anyList())).thenAnswer(i -> i.getArgument(0));
 
 
-        schedule.aggregatePrices();
+        priceAggregationSchedule.aggregatePrices();
 
         verify(aggregatedPriceRepository).saveAll(entitiesCaptor.capture());
         List<AggregatedPriceEntity> saved = entitiesCaptor.getValue();
         assertThat(saved).hasSize(2);
-        assertThat(saved.get(0).getCreatedDate()).isEqualTo(saved.get(1).getCreatedDate());
+        assertThat(saved.getFirst().getCreatedDate()).isEqualTo(saved.get(1).getCreatedDate());
     }
 
     /**
@@ -401,7 +401,7 @@ public class PriceAggregationScheduleTest {
         when(aggregatedPriceRepository.saveAll(anyList())).thenAnswer(i -> i.getArgument(0));
 
 
-        schedule.aggregatePrices();
+        priceAggregationSchedule.aggregatePrices();
 
         verify(aggregatedPriceRepository).saveAll(entitiesCaptor.capture());
         assertThat(entitiesCaptor.getValue()).hasSize(1);
