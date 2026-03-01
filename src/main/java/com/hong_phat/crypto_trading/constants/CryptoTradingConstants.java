@@ -40,6 +40,13 @@ public class CryptoTradingConstants {
             TradingPair.ETHUSDT, "ETH",
             TradingPair.BTCUSDT, "BTC"
     );
+    /**
+     * The constant CURRENCY_TO_PAIR.
+     */
+    public static final Map<String, TradingPair> CURRENCY_TO_PAIR = Map.of(
+            "ETH", TradingPair.ETHUSDT,
+            "BTC", TradingPair.BTCUSDT
+    );
 
     private CryptoTradingConstants() {
         // Private constructor to prevent instantiation

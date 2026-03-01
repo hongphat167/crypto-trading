@@ -1,6 +1,7 @@
 package com.hong_phat.crypto_trading.exception;
 
 import com.hong_phat.crypto_trading.dto.response.BaseResponse;
+import lombok.NonNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -19,7 +20,7 @@ public class GlobalExceptionHandler {
      * @return the response entity
      */
     @ExceptionHandler(CryptoTradingException.class)
-    public ResponseEntity<BaseResponse<Void>> handleBusinessException(CryptoTradingException e) {
+    public ResponseEntity<@NonNull BaseResponse<Void>> handleBusinessException(CryptoTradingException e) {
         return ResponseEntity.ok(BaseResponse.error(e.getCode(), e.getMessage()));
     }
 
@@ -30,7 +31,7 @@ public class GlobalExceptionHandler {
      * @return the response entity
      */
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<BaseResponse<Void>> handleGeneric(Exception e) {
+    public ResponseEntity<@NonNull BaseResponse<Void>> handleGeneric(Exception e) {
         return ResponseEntity.internalServerError()
                 .body(BaseResponse.error("500", "An unexpected error occurred: " + e.getMessage()));
     }
@@ -42,7 +43,7 @@ public class GlobalExceptionHandler {
      * @return the response entity
      */
     @ExceptionHandler(BindException.class)
-    public ResponseEntity<BaseResponse<Void>> handleValidationException(BindException e) {
+    public ResponseEntity<@NonNull BaseResponse<Void>> handleValidationException(BindException e) {
 
         String errorMessage = e.getBindingResult().getFieldErrors().stream()
                 .map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage())
