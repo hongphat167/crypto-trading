@@ -2,6 +2,8 @@ package com.hong_phat.crypto_trading.controller;
 
 import com.hong_phat.crypto_trading.cqrs.command.ExecuteTradeCommand;
 import com.hong_phat.crypto_trading.cqrs.command.handler.ExecuteTradeCommandHandler;
+import com.hong_phat.crypto_trading.cqrs.query.GetTradeHistoryQuery;
+import com.hong_phat.crypto_trading.cqrs.query.handler.GetTradeHistoryQueryHandler;
 import com.hong_phat.crypto_trading.dto.request.TradeRequest;
 import com.hong_phat.crypto_trading.dto.response.BaseResponse;
 import com.hong_phat.crypto_trading.dto.response.TradeTransactionResponse;
@@ -10,10 +12,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * The type Trade controller.
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TradeController {
 
     private final ExecuteTradeCommandHandler executeTradeCommandHandler;
+    private final GetTradeHistoryQueryHandler getTradeHistoryQueryHandler;
 
     /**
      * Execute trade response entity.
@@ -46,5 +48,24 @@ public class TradeController {
         );
 
         return ResponseEntity.ok(BaseResponse.success(tradeTransactionResponse));
+    }
+
+    /**
+     * Gets trade history.
+     *
+     * @param userId the user id
+     * @return the trade history
+     */
+    @GetMapping("/history/{userId}")
+    @Operation(summary = "Get trade history", description = "Returns all trading transactions for a given user")
+    public ResponseEntity<@NonNull BaseResponse<List<TradeTransactionResponse>>> getTradeHistory(@PathVariable Long userId) {
+
+        List<TradeTransactionResponse> tradeTransactionResponses = getTradeHistoryQueryHandler.handle(
+                GetTradeHistoryQuery.builder()
+                        .userId(userId)
+                        .build()
+        );
+
+        return ResponseEntity.ok(BaseResponse.success(tradeTransactionResponses));
     }
 }
