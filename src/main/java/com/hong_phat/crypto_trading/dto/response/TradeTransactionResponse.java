@@ -47,7 +47,7 @@ public class TradeTransactionResponse implements Serializable {
     @Schema(description = "Status of the trade transaction", example = "SUCCESS")
     private TradeTransactionStatus status;
 
-    @Schema(description = "Date and time when the trade was created", example = "01-03-20266 14:30:00")
+    @Schema(description = "Date and time when the trade was created", example = "01-03-2026 14:30:00")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime createdDate;
 }

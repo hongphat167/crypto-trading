@@ -29,7 +29,7 @@ public class AggregatedPriceResponse implements Serializable {
     @Schema(description = "Best ask price for the trading pair", example = "2001.00")
     private BigDecimal askPrice;
 
-    @Schema(description = "Timestamp when the price was aggregated", example = "25-12-2024 15:30:00")
+    @Schema(description = "Timestamp when the price was aggregated", example = "01-03-2026 15:30:00")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime createdDate;
 }
