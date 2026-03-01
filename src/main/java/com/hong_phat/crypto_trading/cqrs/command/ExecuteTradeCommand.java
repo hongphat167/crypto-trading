@@ -18,7 +18,6 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Builder
 public class ExecuteTradeCommand implements Serializable {
-
     private Long userId;
     private String username;
     private TradingPair tradingPair;
