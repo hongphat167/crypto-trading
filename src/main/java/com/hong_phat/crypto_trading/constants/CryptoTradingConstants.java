@@ -1,6 +1,9 @@
 package com.hong_phat.crypto_trading.constants;
 
+import com.hong_phat.crypto_trading.domain.enums.TradingPair;
+
 import java.util.List;
+import java.util.Map;
 
 /**
  * The type Crypto trading constants.
@@ -26,6 +29,17 @@ public class CryptoTradingConstants {
      * The constant SUCCESS_MESSAGE.
      */
     public static final String SUCCESS_MESSAGE = "Success";
+    /**
+     * The constant USDT.
+     */
+    public static final String USDT = "USDT";
+    /**
+     * The constant CRYPTO_CURRENCY_MAP.
+     */
+    public static final Map<TradingPair, String> CRYPTO_CURRENCY_MAP = Map.of(
+            TradingPair.ETHUSDT, "ETH",
+            TradingPair.BTCUSDT, "BTC"
+    );
 
     private CryptoTradingConstants() {
         // Private constructor to prevent instantiation

@@ -33,7 +33,9 @@ public class PriceController {
     @GetMapping
     @Operation(summary = "Get latest best aggregated prices", description = "Returns the latest best bid and ask prices")
     public ResponseEntity<@NonNull BaseResponse<List<AggregatedPriceResponse>>> getLatestBestPrices() {
-        List<AggregatedPriceResponse> prices = getBestPriceQueryHandler.handle();
-        return ResponseEntity.ok(BaseResponse.success(prices));
+
+        List<AggregatedPriceResponse> aggregatedPriceResponses = getBestPriceQueryHandler.handle();
+
+        return ResponseEntity.ok(BaseResponse.success(aggregatedPriceResponses));
     }
 }

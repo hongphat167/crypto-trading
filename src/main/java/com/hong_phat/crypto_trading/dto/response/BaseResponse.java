@@ -23,7 +23,6 @@ public class BaseResponse<T> implements Serializable {
     private boolean success;
     private String code;
     private String des;
-    private String messageCode;
     private T data;
 
     /**
@@ -38,7 +37,6 @@ public class BaseResponse<T> implements Serializable {
                 .success(true)
                 .code(SUCCESS_CODE)
                 .des(SUCCESS_MESSAGE)
-                .messageCode(SUCCESS_CODE)
                 .data(data)
                 .build();
     }
@@ -54,7 +52,6 @@ public class BaseResponse<T> implements Serializable {
                 .success(true)
                 .code(SUCCESS_CODE)
                 .des(SUCCESS_MESSAGE)
-                .messageCode(SUCCESS_CODE)
                 .build();
     }
 
@@ -71,7 +68,6 @@ public class BaseResponse<T> implements Serializable {
                 .success(false)
                 .code(code)
                 .des(message)
-                .messageCode(code)
                 .build();
     }
 }
