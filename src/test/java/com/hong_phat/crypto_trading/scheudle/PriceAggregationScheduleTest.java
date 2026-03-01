@@ -208,7 +208,6 @@ public class PriceAggregationScheduleTest {
         when(responseSpec.bodyToMono(HuobiResponse.class))
                 .thenReturn(Mono.error(new RuntimeException("Huobi error")));
 
-
         schedule.aggregatePrices();
 
         verify(aggregatedPriceRepository, never()).saveAll(anyList());

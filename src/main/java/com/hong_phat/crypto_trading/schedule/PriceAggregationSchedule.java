@@ -6,6 +6,7 @@ import com.hong_phat.crypto_trading.dto.PriceData;
 import com.hong_phat.crypto_trading.dto.response.BinanceResponse;
 import com.hong_phat.crypto_trading.dto.response.HuobiResponse;
 import com.hong_phat.crypto_trading.repository.AggregatedPriceRepository;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
@@ -41,7 +42,7 @@ public class PriceAggregationSchedule {
         List<AggregatedPriceEntity> aggregatedPriceEntities = new ArrayList<>();
 
         for (TradingPair pair : TradingPair.values()) {
-            String symbol = pair.name();
+            String symbol = pair.name().toLowerCase();
             PriceData binance = binancePrices.get(symbol);
             PriceData huobi = huobiPrices.get(symbol);
 
@@ -78,7 +79,7 @@ public class PriceAggregationSchedule {
             List<BinanceResponse> binanceResponses = webClient.get()
                     .uri(BINANCE_URL)
                     .retrieve()
-                    .bodyToMono(new ParameterizedTypeReference<List<BinanceResponse>>() {
+                    .bodyToMono(new ParameterizedTypeReference<@NonNull List<BinanceResponse>>() {
                     })
                     .block();
 
@@ -88,13 +89,13 @@ public class PriceAggregationSchedule {
             }
 
             binanceResponses.stream()
-                    .filter(ticker -> BINANCE_SUPPORTED_PAIRS.contains(ticker.getSymbol()))
+                    .filter(ticker -> SUPPORTED_PAIRS.contains(ticker.getSymbol().toLowerCase()))
                     .forEach(ticker -> {
                         PriceData priceData = PriceData.builder()
                                 .askPrice(new BigDecimal(ticker.getAskPrice()))
                                 .bidPrice(new BigDecimal(ticker.getBidPrice()))
                                 .build();
-                        prices.put(ticker.getSymbol(), priceData);
+                        prices.put(ticker.getSymbol().toLowerCase(), priceData);
                     });
 
             log.info("Fetched {} prices from Binance", prices.size());
@@ -120,14 +121,13 @@ public class PriceAggregationSchedule {
 
             huobiResponse.getData()
                     .stream()
-                    .filter(ticker -> HUOBI_SUPPORTED_PAIRS.contains(ticker.getSymbol()))
+                    .filter(ticker -> SUPPORTED_PAIRS.contains(ticker.getSymbol().toLowerCase()))
                     .forEach(ticker -> {
                         PriceData priceData = PriceData.builder()
                                 .askPrice(ticker.getAsk())
                                 .bidPrice(ticker.getBid())
                                 .build();
-                        String normalizedSymbol = ticker.getSymbol().toUpperCase();
-                        prices.put(normalizedSymbol, priceData);
+                        prices.put(ticker.getSymbol().toLowerCase(), priceData);
                     });
 
             log.info("Fetched {} prices from Huobi", prices.size());

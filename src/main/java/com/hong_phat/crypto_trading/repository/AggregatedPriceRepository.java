@@ -13,5 +13,11 @@ import java.util.Optional;
 @Repository
 public interface AggregatedPriceRepository extends JpaRepository<AggregatedPriceEntity, Long> {
 
+    /**
+     * Find top by trading pair order by created date desc optional.
+     *
+     * @param tradingPair the trading pair
+     * @return the optional
+     */
     Optional<AggregatedPriceEntity> findTopByTradingPairOrderByCreatedDateDesc(TradingPair tradingPair);
 }
